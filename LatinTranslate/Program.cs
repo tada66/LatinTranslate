@@ -52,6 +52,22 @@ namespace LatinaTranslate
                         return DetectionSubsF(input).result;
                     case 2:
                         return DetectionSubsS(input).result;
+                    case 3:
+                        return DetectionSubsV(input).result;
+                    case 4:
+                        return "4 not yet implemented";
+                    case 5:
+                        return "5 not yet implemented";
+                    case 6:
+                        return "6 not yet implemented";
+                    case 7:
+                        return "7 not yet implemented";
+                    case 8:
+                        return "8 not yet implemented";
+                    case 9:
+                        return "9 not yet implemented";
+                        //return TryEverything(input);
+
                 }
             }
             else
@@ -59,22 +75,19 @@ namespace LatinaTranslate
                 var result = DetectionSubsF(input);
                 string bestmatch = "";
                 if (result.probability == 0)
-                {
                     return (result.result);
-                }
                 else if (result.probability == 1)
-                {
                     bestmatch = result.result;
-                }
                 result = DetectionSubsS(input);
                 if (result.probability == 0)
-                {
                     return (result.result);
-                }
                 else if (result.probability == 1)
-                {
                     bestmatch = result.result;
-                }
+                result = DetectionSubsV(input);
+                if (result.probability == 0)
+                    return (result.result);
+                else if (result.probability == 1)
+                    bestmatch = result.result;
                 return bestmatch;
 
             }
@@ -111,6 +124,38 @@ namespace LatinaTranslate
                 return ("match found: " + bestmatch, 0);
             else
                 return ("no match with servus found", 1);
+        }
+
+        public static (string result, int probability) DetectionSubsV(string input)
+        {
+            string bestmatch = "";
+            using (StreamReader sr = new StreamReader("resources/Verbum.txt"))
+            {
+                for (int i = 0; i <= 11; i++)
+                {
+                    string linecheck = sr.ReadLine();
+                    if (!string.IsNullOrEmpty(linecheck) && input.Length >= linecheck.Length)
+                    {
+                        string shortened = input.Substring(input.Length - linecheck.Length);
+                        if (shortened == linecheck)
+                            bestmatch = bestmatch + "\n" + "Podle Verbum (2. dek) " + NumToLat(i) + " -" + linecheck;
+                    }
+                    else
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine("Critical Err - Input is too short");
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.WriteLine("Input length: " + input.Length.ToString());
+                        Console.WriteLine("Check length: " + linecheck.Length.ToString());
+                        Console.ResetColor();
+                        ErrorLogger("Critical Err - detectionSubsV - input string length " + input.Length + " is too short, should be at least " + linecheck.Length);
+                    }
+                }
+            }
+            if (!string.IsNullOrEmpty(bestmatch))
+                return ("match found: " + bestmatch, 0);
+            else
+                return ("no match with verbum found", 1);
         }
 
         public static (string result, int probability) DetectionSubsF(string input)
