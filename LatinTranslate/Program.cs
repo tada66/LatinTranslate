@@ -14,41 +14,49 @@ namespace LatinaTranslate
     {
         static void Main(string[] args)
         {
+            if(!File.Exists("resources/Femina.txt"))
+            {
+                ErrorLogger("Fatal err - resources folder not found");
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Fatal Error - resources not found");
+                Console.ForegroundColor = ConsoleColor.Yellow;      
+                Console.WriteLine("Press any key to exit");
+                Console.ReadKey();
+                Environment.Exit(0);
+            }
             Console.Write("Word: ");
             string word = Console.ReadLine();
-            if (word.Length >= 4)
-                word = word.Substring(word.Length - 4); //exctract last 4 letters
+            word = InputCleanup(word);
             Console.WriteLine("0 - unknown(search all)\n1 - femina(1. dek)\n2 - servus(2. dek)\n3 - exemplum(2. dek)\n4 - miles(3. dek)\n5 - maria(3. dek)\n6 - exercitus(4. dek)\n7 - cornu(4. dek)\n8 - res(5. dek)\n9 - test all");
             Console.Write("If known: ");
-            int genderchoice;
             string ReadLineDek = Console.ReadLine();
-            bool successfulparse = Int32.TryParse(ReadLineDek, out genderchoice);
+            bool successfulparse = Int32.TryParse(ReadLineDek, out int genderchoice);
             Console.ForegroundColor = ConsoleColor.Red;
             if (!successfulparse)
                 Console.WriteLine("Attempted conversion of '{0}' failed.\nUsing defualt values", ReadLineDek ?? "<null>");
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine("INFO: " + word);
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine(detectionSubs(word, genderchoice));
+            Console.WriteLine(DetectionSubs(word, genderchoice));
             Console.ResetColor();
             Console.ReadKey();
         }
 
-        public static string detectionSubs(string input, int gender)
+        public static string DetectionSubs(string input, int gender)
         {
             if (gender != 0 && gender != 9)
             {
                 switch (gender)
                 {
                     case 1:
-                        return detectionSubsF(input).result;
+                        return DetectionSubsF(input).result;
                     case 2:
-                        return detectionSubsS(input).result;
+                        return DetectionSubsS(input).result;
                 }
             }
             else
             {
-                var result = detectionSubsF(input);
+                var result = DetectionSubsF(input);
                 string bestmatch = "";
                 if (result.probability == 0)
                 {
@@ -58,7 +66,7 @@ namespace LatinaTranslate
                 {
                     bestmatch = result.result;
                 }
-                result = detectionSubsS(input);
+                result = DetectionSubsS(input);
                 if (result.probability == 0)
                 {
                     return (result.result);
@@ -73,7 +81,7 @@ namespace LatinaTranslate
             return "err Unknown word";
         }
 
-        public static (string result, int probability) detectionSubsS(string input)
+        public static (string result, int probability) DetectionSubsS(string input)
         {
             string bestmatch = "";
             using (StreamReader sr = new StreamReader("resources/Servus.txt"))
@@ -105,7 +113,7 @@ namespace LatinaTranslate
                 return ("no match with servus found", 1);
         }
 
-        public static (string result, int probability) detectionSubsF(string input)
+        public static (string result, int probability) DetectionSubsF(string input)
         {   //feminine gender detection
             string bestmatch = "";
             using (StreamReader sr = new StreamReader("resources/Femina.txt"))
@@ -171,12 +179,12 @@ namespace LatinaTranslate
 
         }
 
-        public static void Logger(string lines)
+        public static string InputCleanup(string input)
         {
-            using (StreamWriter file = new StreamWriter("applicationlog.txt", true))
-            {
-                file.WriteLine(lines);
-            }
+            if(input.Length > 4)
+                input = input.Substring(input.Length - 4);
+            input = input.ToLower();
+            return input;
         }
 
         public static void ErrorLogger(string lines)
