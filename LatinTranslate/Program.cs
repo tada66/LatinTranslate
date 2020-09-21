@@ -10,7 +10,6 @@ using System.Drawing;
 
 namespace LatinaTranslate
 {
-
     class Program
     {
         static string filename = "n";
