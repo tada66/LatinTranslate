@@ -32,7 +32,7 @@ namespace LatinaTranslate
             string word = Console.ReadLine();
             //Logger("word is " + word, false, filename);
             word = InputCleanup(word);
-            Console.WriteLine("0 - unknown(search all)\n1 - femina(1. dek)\n2 - servus(2. dek)\n3 - exemplum(2. dek)\n4 - miles(3. dek)\n5 - maria(3. dek)\n6 - exercitus(4. dek)\n7 - cornu(4. dek)\n8 - res(5. dek)\n9 - test all");
+            Console.WriteLine("0 - unknown(smart search)\n1 - test and list all\n\n---MANUAL OVERRIDE---\n2 - femina(1. dek)\n3 - servus(2. dek)\n4 - verbum(2. dek)\n5 - miles(3. dek)\n6 - carmen(3. dek)\n7 - maria(3. dek)\n8 - exercitus(4. dek)\n9 - cornu(4. dek)\n10 - res(5. dek)");
             Console.Write("If known: ");
             string ReadLineDek = Console.ReadLine();
             bool successfulparse = Int32.TryParse(ReadLineDek, out int genderchoice);
@@ -97,7 +97,7 @@ namespace LatinaTranslate
                 if (result.probability == 0)
                     return (result.result);
                 else if (result.probability == 1)
-                    bestmatch = result.result;
+                    bestmatch = result.result;      //servus and verbum gets fucky wucky 
                 return bestmatch;
 
             }
@@ -223,29 +223,29 @@ namespace LatinaTranslate
             switch (num)    //gives back the latin name 
             {
                 case 0:
-                    return "nom. sg.";
+                    return "Nominativ. sg.";
                 case 1:
-                    return "gen. sg.";
+                    return "Genitiv. sg.";
                 case 2:
-                    return "dat. sg.";
+                    return "Dativ. sg.";
                 case 3:
-                    return "ak. sg.";
+                    return "Akuzativ. sg.";
                 case 4:
-                    return "vok. sg.";
+                    return "Vokativ. sg.";
                 case 5:
-                    return "abl. sg.";
+                    return "Ablativ. sg.";
                 case 6:
-                    return "nom. pl.";
+                    return "Nominativ. pl.";
                 case 7:
-                    return "gen. pl.";
+                    return "Genitiv. pl.";
                 case 8:
-                    return "dat. pl.";
+                    return "Dativ. pl.";
                 case 9:
-                    return "ak. pl.";
+                    return "Akuzativ. pl.";
                 case 10:
-                    return "vok. pl.";
+                    return "Vokativ. pl.";
                 case 11:
-                    return "abl. pl.";
+                    return "Ablativ. pl.";
             }
             ErrorLogger("NumToLat Failed - err Number is out of range");
             return "err Number is out of range";
