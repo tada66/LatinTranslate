@@ -10,10 +10,14 @@ using System.Drawing;
 
 namespace LatinaTranslate
 {
+
     class Program
     {
+        static string filename = "n";
         static void Main(string[] args)
         {
+            filename = DateTime.Now.Millisecond.ToString();
+            //Logger("", true, filename);
             if(!File.Exists("resources/Femina.txt"))
             {
                 ErrorLogger("Fatal err - resources folder not found");
@@ -26,6 +30,7 @@ namespace LatinaTranslate
             }
             Console.Write("Word: ");
             string word = Console.ReadLine();
+            //Logger("word is " + word, false, filename);
             word = InputCleanup(word);
             Console.WriteLine("0 - unknown(search all)\n1 - femina(1. dek)\n2 - servus(2. dek)\n3 - exemplum(2. dek)\n4 - miles(3. dek)\n5 - maria(3. dek)\n6 - exercitus(4. dek)\n7 - cornu(4. dek)\n8 - res(5. dek)\n9 - test all");
             Console.Write("If known: ");
@@ -44,7 +49,7 @@ namespace LatinaTranslate
 
         public static string DetectionSubs(string input, int gender)
         {
-            if (gender != 0 && gender != 9)
+            if (gender != 0)
             {
                 switch (gender)
                 {
@@ -56,17 +61,22 @@ namespace LatinaTranslate
                         return DetectionSubsV(input).result;
                     case 4:
                         return "4 not yet implemented";
+                        //return DetectionSubsM(input).result;
                     case 5:
                         return "5 not yet implemented";
+                        //return DetectionSubsM(input).result;
                     case 6:
                         return "6 not yet implemented";
+                        //return DetectionSubsE(input).result;
                     case 7:
                         return "7 not yet implemented";
+                        //return DetectionSubsC(input).result;
                     case 8:
                         return "8 not yet implemented";
+                        //return DetectionSubsR(input).result;
                     case 9:
-                        return "9 not yet implemented";
-                        //return TryEverything(input);
+                        TryEverything(input);
+                        return "";
 
                 }
             }
@@ -80,7 +90,7 @@ namespace LatinaTranslate
                     bestmatch = result.result;
                 result = DetectionSubsS(input);
                 if (result.probability == 0)
-                    return (result.result);
+                    return (result.result);         
                 else if (result.probability == 1)
                     bestmatch = result.result;
                 result = DetectionSubsV(input);
@@ -92,6 +102,24 @@ namespace LatinaTranslate
 
             }
             return "err Unknown word";
+        }
+
+        public static void TryEverything(string input)
+        {
+            string result = "";
+            Console.ForegroundColor = ConsoleColor.Magenta;
+            result = result + DetectionSubsF(input).result + "\n";
+            if(DetectionSubsF(input).probability == 0)
+                Console.WriteLine(DetectionSubsF(input).result);
+            Console.ForegroundColor = ConsoleColor.Blue;
+            result = result + DetectionSubsS(input).result + "\n";
+            if (DetectionSubsS(input).probability == 0)
+                Console.WriteLine(DetectionSubsS(input).result);
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
+            result = result + DetectionSubsV(input).result + "\n";
+            if (DetectionSubsV(input).probability == 0)
+                Console.WriteLine(DetectionSubsV(input).result);
+            Console.ResetColor();
         }
 
         public static (string result, int probability) DetectionSubsS(string input)
@@ -248,6 +276,25 @@ namespace LatinaTranslate
                 using (StreamWriter file = new StreamWriter(filename, true))
                 {
                     file.WriteLine(lines);
+                }
+            }
+        }
+
+        public static void Logger(string lines, bool init, string filename)
+        {
+            if(init)
+            {
+                Directory.CreateDirectory("Logs");
+                using (StreamWriter sw = new StreamWriter("Logs/Log-" + filename + ".txt"))
+                {
+                    sw.WriteLine(DateTime.Now + " Log created");
+                }
+            }
+            else
+            {
+                using(StreamWriter sw = new StreamWriter("Logs/Log-" + filename + ".txt", true))
+                {
+                    sw.WriteLine(DateTime.Now + " - " + lines);
                 }
             }
         }
