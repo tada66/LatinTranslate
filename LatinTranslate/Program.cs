@@ -77,7 +77,6 @@ namespace LatinaTranslate
                     case 9:
                         TryEverything(input);
                         return "";
-
                 }
             }
             else
@@ -99,7 +98,6 @@ namespace LatinaTranslate
                 else if (result.probability == 1)
                     bestmatch = result.result;      //servus and verbum gets fucky wucky 
                 return bestmatch;
-
             }
             return "err Unknown word";
         }
@@ -249,7 +247,6 @@ namespace LatinaTranslate
             }
             ErrorLogger("NumToLat Failed - err Number is out of range");
             return "err Number is out of range";
-
         }
 
         public static string InputCleanup(string input)
